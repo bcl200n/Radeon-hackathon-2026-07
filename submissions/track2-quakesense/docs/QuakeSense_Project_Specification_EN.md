@@ -1,6 +1,6 @@
 # QuakeSense Project Specification
 
-**AMD AI DevMaster Hackathon 2026 — Track 2: Agentic AI**
+**AMD AI DevMaster Hackathon 2026 — Track 2: Development & Local Deployment of Private AI Agents**
 
 **Participant:** Bian Chunlin
 **Application:** QuakeSense

@@ -1,6 +1,6 @@
 # QuakeSense
 
-**AMD AI DevMaster Hackathon 2026 — Track 2: Agentic AI**
+**AMD AI DevMaster Hackathon 2026 — Track 2: Development & Local Deployment of Private AI Agents**
 
 **Participant:** Bian Chunlin (`bcl200n`)
 
@@ -25,6 +25,21 @@ routes, and replan as the simulated city evolves.
 | Separate subtitles | [`demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt`](demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt) |
 | Presentation | [`docs/QuakeSense_AMD_Track2_Deck_EN.pptx`](docs/QuakeSense_AMD_Track2_Deck_EN.pptx) |
 | Radeon run evidence | [`evidence/xian_llm_run/`](evidence/xian_llm_run/) |
+
+## Official Track 2 compliance map
+
+| Official requirement | Exact review location |
+|---|---|
+| Application scenarios | Project specification, Section 1; presentation, Slides 1 and 8–11 |
+| Agent architecture diagram | Project specification, Section 2; presentation, Slides 3–4 |
+| Introduction to core capabilities | Project specification, Sections 3–4; presentation, Slides 3–7 |
+| Model introduction and local deployment plan | Project specification, Section 5; this README, **Quick start** |
+| AMD Radeon inference-speed optimization | Project specification, Section 6; presentation, Slides 12–13; raw run evidence |
+| Complete source repository | [`source/`](source/) plus the linked full development repository |
+| Environment, startup guide, dependencies | This README and [`source/README.md`](source/README.md) |
+| 3–5 minute actual-operation demo | 4:59 English video; agent/WebGIS operation at 0:35–3:44 |
+| Radeon GPU execution from runtime to result | Video at 3:44–4:43; presentation, Slides 12–14; [`evidence/xian_llm_run/`](evidence/xian_llm_run/) |
+| Supplementary PPT or poster | Editable English PPT, Slides 1–16 |
 
 ## What judges can verify
 
