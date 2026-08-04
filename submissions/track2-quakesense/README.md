@@ -21,7 +21,7 @@ routes, and replan as the simulated city evolves.
 | Project specification | [`docs/QuakeSense_Project_Specification_EN.md`](docs/QuakeSense_Project_Specification_EN.md) |
 | Source code | [`source/`](source/) and the [full development repository](https://github.com/bcl200n/earthquake-early-warning/tree/session/quakesense-terrain-and-track2) |
 | Reproduction guide | This README and [`source/README.md`](source/README.md) |
-| Demo video | [`demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4`](demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4) — 4:59, English narration and burned-in subtitles |
+| Demo video | [`demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4`](demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4) — 5:19, stable 1080p video with English narration and burned-in subtitles |
 | Separate subtitles | [`demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt`](demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt) |
 | Presentation | [`docs/QuakeSense_AMD_Track2_Deck_EN.pptx`](docs/QuakeSense_AMD_Track2_Deck_EN.pptx) |
 | Radeon run evidence | [`evidence/xian_llm_run/`](evidence/xian_llm_run/) |
@@ -37,8 +37,8 @@ routes, and replan as the simulated city evolves.
 | AMD Radeon inference-speed optimization | Project specification, Section 6; presentation, Slides 12–13; raw run evidence |
 | Complete source repository | [`source/`](source/) plus the linked full development repository |
 | Environment, startup guide, dependencies | This README and [`source/README.md`](source/README.md) |
-| 3–5 minute actual-operation demo | 4:59 English video; agent/WebGIS operation at 0:35–3:44 |
-| Radeon GPU execution from runtime to result | Video at 3:44–4:43; presentation, Slides 12–14; [`evidence/xian_llm_run/`](evidence/xian_llm_run/) |
+| 3–5 minute actual-operation demo | 5:19 English video; agent/WebGIS mechanism and operation at 0:37–3:17 |
+| Radeon GPU execution from runtime to result | Video at 3:56–4:59; presentation, Slides 12–14; [`evidence/xian_llm_run/`](evidence/xian_llm_run/) |
 | Supplementary PPT or poster | Editable English PPT, Slides 1–16 |
 
 ## What judges can verify
