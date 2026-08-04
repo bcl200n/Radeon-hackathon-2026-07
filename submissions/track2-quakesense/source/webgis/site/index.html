@@ -1,0 +1,243 @@
+<meta charset="utf-8">
+<title>QuakeSense AI — every resident of Chengdu, simulated individually</title>
+<meta name="description" content="Full-population agent model of earthquake evacuation: 18.9 million individual agents on a single GPU, showing that information, not routing, decides who reaches shelter.">
+<style>
+  :root{
+    --paper:#eceee9; --surface:#f6f7f4; --surface-2:#e3e6e0;
+    --ink:#191d1a; --ink-2:#4a534d; --ink-3:#79837b; --rule:#ccd1c9;
+    --teal:#0f6a6c; --ochre:#8a6318; --plum:#6e2e5c; --sienna:#a63b1f; --moss:#3f6b2b;
+    --serif:Cambria,"Iowan Old Style",Charter,Georgia,"Songti SC",serif;
+    --sans:system-ui,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--paper:#12160f;--surface:#1a1f19;--surface-2:#252b23;
+      --ink:#e7ebe4;--ink-2:#a8b1a6;--ink-3:#7b847a;--rule:#2f3630;
+      --teal:#4fc2c4;--ochre:#d8ab45;--plum:#d489bd;--sienna:#eb7f56;--moss:#8cc66a;}
+  }
+  :root[data-theme="light"]{--paper:#eceee9;--surface:#f6f7f4;--surface-2:#e3e6e0;
+    --ink:#191d1a;--ink-2:#4a534d;--ink-3:#79837b;--rule:#ccd1c9;
+    --teal:#0f6a6c;--ochre:#8a6318;--plum:#6e2e5c;--sienna:#a63b1f;--moss:#3f6b2b;}
+  :root[data-theme="dark"]{--paper:#12160f;--surface:#1a1f19;--surface-2:#252b23;
+    --ink:#e7ebe4;--ink-2:#a8b1a6;--ink-3:#7b847a;--rule:#2f3630;
+    --teal:#4fc2c4;--ochre:#d8ab45;--plum:#d489bd;--sienna:#eb7f56;--moss:#8cc66a;}
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+       line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1020px;margin:0 auto;padding:44px 22px 90px;
+        display:flex;flex-direction:column;gap:52px}
+  h1{font-family:var(--serif);font-size:2.5rem;font-weight:700;margin:0;
+     letter-spacing:-.015em;line-height:1.15;text-wrap:balance}
+  h2{font-family:var(--serif);font-size:1.42rem;font-weight:700;margin:0}
+  h3{font-family:var(--serif);font-size:1.05rem;font-weight:700;margin:0}
+  p{margin:0;max-width:70ch;color:var(--ink-2)}
+  a{color:var(--teal)}
+  .eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;
+           text-transform:uppercase;color:var(--ink-3)}
+  header{border-bottom:3px solid var(--ink);padding-bottom:22px;
+         display:flex;flex-direction:column;gap:13px}
+  section{display:flex;flex-direction:column;gap:17px}
+  .lead{color:var(--ink);font-size:1.06rem}
+  .scroll{overflow-x:auto}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  .cards{display:grid;gap:13px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .c{background:var(--surface);border:1px solid var(--rule);padding:15px 17px;
+     display:flex;flex-direction:column;gap:5px}
+  .c .k{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;
+        text-transform:uppercase;color:var(--ink-3)}
+  .c .big{font-family:var(--mono);font-variant-numeric:tabular-nums;
+          font-size:1.6rem;font-weight:600;line-height:1.1;letter-spacing:-.02em}
+  .c .sub{font-size:.83rem;color:var(--ink-2)}
+  .c.hot{border-left:4px solid var(--sienna)} .c.hot .big{color:var(--sienna)}
+  .c.ok{border-left:4px solid var(--moss)} .c.ok .big{color:var(--moss)}
+
+  .tiles{display:grid;gap:15px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .tile{background:var(--surface);border:1px solid var(--rule);padding:19px;
+        display:flex;flex-direction:column;gap:9px;text-decoration:none;color:inherit}
+  .tile:hover{background:var(--surface-2)}
+  .tile .t{font-family:var(--serif);font-size:1.08rem;font-weight:700;color:var(--ink)}
+  .tile .d{font-size:.87rem;color:var(--ink-2)}
+  .tile .go{font-family:var(--mono);font-size:.72rem;color:var(--teal)}
+
+  video{width:100%;border:1px solid var(--rule);background:var(--surface-2);display:block}
+  .novideo{background:var(--surface);border:1px dashed var(--rule);padding:38px 22px;
+           text-align:center;color:var(--ink-3);font-size:.9rem}
+
+  table{border-collapse:collapse;width:100%;min-width:720px;font-size:.83rem}
+  th{text-align:right;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;
+     text-transform:uppercase;color:var(--ink-3);font-weight:400;
+     padding:0 8px 7px;border-bottom:1px solid var(--rule);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  td{padding:6px 8px;border-bottom:1px solid var(--rule);text-align:right;
+     font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  td:first-child{font-family:var(--sans)}
+  .ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.85rem}
+  input[type=search]{font-family:var(--sans);font-size:.85rem;padding:6px 10px;
+    background:var(--surface);color:var(--ink);border:1px solid var(--rule);min-width:200px}
+  .note{font-size:.82rem;color:var(--ink-3);max-width:76ch}
+  .note b{color:var(--ink-2)}
+  ul{margin:0;padding-left:1.15em;display:flex;flex-direction:column;gap:7px;
+     color:var(--ink-2);font-size:.93rem}
+  li{max-width:70ch}
+  footer{border-top:1px solid var(--rule);padding-top:20px;font-size:.83rem;
+         color:var(--ink-3)}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">QuakeSense Labs · AMD AI DevMaster Hackathon 2026 · Track 2</div>
+  <h1>Every resident of Chengdu, simulated individually</h1>
+  <p class="lead">18,868,366 agents — one per person, not a sample — on a single AMD
+     Radeon GPU with no external network call. The finding: when the network goes
+     down, what decides who reaches shelter is not the routing algorithm. It is who
+     already knew where to go, and how fast that spread.</p>
+</header>
+
+<section>
+  <div class="cards">
+    <div class="c hot"><span class="k">Capacity ceiling</span><span class="big">13.45 %</span>
+      <span class="sub">Share of residents the official shelter register can hold</span></div>
+    <div class="c ok"><span class="k">Information, at 15 min</span><span class="big">+49.9 %</span>
+      <span class="sub">Full prior knowledge against none</span></div>
+    <div class="c"><span class="k">Information, at 2 h</span><span class="big">+3.0 %</span>
+      <span class="sub">Same contrast, later horizon</span></div>
+    <div class="c hot"><span class="k">Guidance, at 2 h</span><span class="big">−15.8 %</span>
+      <span class="sub">LLM leaders front-load, then herd</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Demo</div>
+  <h2>Four minutes, start to finish</h2>
+  <video id="vid" controls preload="metadata" poster="assets/poster.png">
+    <source src="assets/demo.mp4" type="video/mp4">
+  </video>
+  <div class="novideo" id="novid" hidden>
+    Video not published yet. The narration and the auto-advancing demo page are in
+    <code>claude/hackathon/demo_v2/</code>.
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Explore</div>
+  <h2>The model, running</h2>
+  <div class="tiles">
+    <a class="tile" href="replay.html">
+      <span class="t">Evacuation replay</span>
+      <span class="d">Three hours over 66,546 blocks. Five layers, including what
+        people know — the map fills in as information spreads.</span>
+      <span class="go">Open the map →</span>
+    </a>
+    <a class="tile" href="graph.html">
+      <span class="t">Knowledge graph</span>
+      <span class="d">Components, defects and the rules distilled from them.
+        Solid nodes were measured; dashed ones were inferred and later disproved.</span>
+      <span class="go">Open the graph →</span>
+    </a>
+    <a class="tile" href="https://github.com/bcl200n/earthquake-early-warning">
+      <span class="t">Source</span>
+      <span class="d">Simulator, invariant checks, and the scripts that produced
+        every figure on this page.</span>
+      <span class="go">GitHub →</span>
+    </a>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Results</div>
+  <h2>Every run, with its configuration</h2>
+  <p>Each row is one full-city simulation. Conservation error and overfilled shelters
+     are shown because they are the invariants that make the rest trustworthy — both
+     are zero everywhere.</p>
+  <div class="ctl">
+    <input type="search" id="q" placeholder="Filter by tag…" aria-label="Filter runs">
+    <span class="note" id="count"></span>
+  </div>
+  <div class="scroll"><table id="tbl">
+    <thead><tr>
+      <th>Run</th><th>Agents</th><th>Knows</th><th>LLM</th><th>Sheltered</th>
+      <th>Util</th><th>Safe@15m</th><th>Safe@2h</th><th>p50</th><th>Walk</th>
+      <th>Gini</th><th>Cons.</th><th>Over</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <p class="note"><b>Raw data:</b> <a href="assets/results.json">results.json</a> —
+     the same summaries committed under <code>claude/results_ablation/</code>.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Honest scope</div>
+  <h2>What this does not claim</h2>
+  <ul>
+    <li><b>District boundaries are official; subdistrict and community tiers are
+      constructed.</b> The boundary file has no children, so the lower two tiers are
+      an equal-population partition. Leader density is real; their affiliation is not.</li>
+    <li><b>Population is disaggregated at ~100 m</b> (WorldPop R2025A, 3 arc-seconds
+      ≈ 80 × 92 m at Chengdu's latitude), so block-level allocation interpolates below
+      the source resolution.</li>
+    <li><b>Only Chengdu has an official shelter register.</b> Comparison cities carry
+      OpenStreetMap points with capacities from a fixed ladder, so cross-city
+      comparison is restricted to dimensionless within-city quantities.</li>
+    <li><b>Congestion is under-represented</b> — density uses whole-block area while
+      people walk on streets.</li>
+    <li><b>Behavioural parameters are swept, not calibrated.</b> No survey of shelter
+      awareness exists for Chengdu.</li>
+  </ul>
+  <p class="note">Four earlier findings were published and then retracted; they are
+     listed in <code>claude/docs/ENGINEERING_LOG.md</code> §8 and on the deck, with
+     what each one turned out to be.</p>
+</section>
+
+<footer>
+  QuakeSense Labs · Chengdu municipal shelter register and 2026–2035 plan ·
+  WorldPop R2025A · OpenStreetMap contributors
+</footer>
+
+</div>
+
+<script>
+(async function () {
+  const v = document.getElementById("vid"), nv = document.getElementById("novid");
+  // The poster and mp4 land here only once the recording exists; until then say
+  // so plainly rather than showing a broken player.
+  v.addEventListener("error", () => { v.hidden = true; nv.hidden = false; }, true);
+  fetch("assets/demo.mp4", { method: "HEAD" }).then(r => {
+    if (!r.ok) { v.hidden = true; nv.hidden = false; }
+  }).catch(() => { v.hidden = true; nv.hidden = false; });
+
+  const rows = await fetch("assets/results.json").then(r => r.json()).catch(() => []);
+  const tb = document.querySelector("#tbl tbody");
+  const q = document.getElementById("q");
+  const count = document.getElementById("count");
+
+  const pct = x => x == null ? "—" : (x * 100).toFixed(2) + "%";
+  const n = x => x == null ? "—" : x.toLocaleString("en-US");
+  const f = (x, d) => x == null ? "—" : x.toFixed(d);
+
+  function render(filter) {
+    const f2 = (filter || "").toLowerCase();
+    const show = rows.filter(r => !f2 || (r.tag || r.run).toLowerCase().includes(f2));
+    tb.innerHTML = show.map(r => `<tr>
+      <td>${r.tag || r.run}</td>
+      <td>${n(r.agents)}</td>
+      <td>${r.knows_one == null ? "—" : (r.knows_one * 100).toFixed(0) + "%"}</td>
+      <td>${r.llm ? "yes" : "—"}</td>
+      <td>${n(r.sheltered)}</td>
+      <td>${f(r.util, 3)}</td>
+      <td>${pct(r.safe15)}</td>
+      <td>${pct(r.safe120)}</td>
+      <td>${f(r.p50, 1)}</td>
+      <td>${r.walk == null ? "—" : Math.round(r.walk)}</td>
+      <td>${f(r.gini, 3)}</td>
+      <td>${r.cons === 0 ? "0" : "<b>" + r.cons + "</b>"}</td>
+      <td>${r.over === 0 ? "0" : "<b>" + r.over + "</b>"}</td>
+    </tr>`).join("");
+    count.textContent = show.length + " of " + rows.length + " runs";
+  }
+  q.addEventListener("input", () => render(q.value));
+  render("");
+})();
+</script>

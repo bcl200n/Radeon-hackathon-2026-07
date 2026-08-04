@@ -1,0 +1,79 @@
+﻿1
+00:00:00,000 --> 00:00:18,581
+We developed QuakeSense: local LLM leaders + resident agents +
+real city networks + an inspectable WebGIS.
+
+2
+00:00:18,581 --> 00:00:35,436
+60 points: functional value, innovation, UX. 40 points: AMD Radeon
++ ROCm local inference and optimization.
+
+3
+00:00:35,436 --> 00:00:56,170
+Real inputs → agent reasoning → validated tools → simulator state
+change → inspectable WebGIS.
+
+4
+00:00:56,170 --> 00:01:15,828
+Every 10 minutes: observe → reason with memory → plan → validated
+tool → execute → replan.
+
+5
+00:01:15,828 --> 00:01:34,589
+Xi'an: 350 leaders · 4,242 decisions · 0 failed or unparseable ·
+100% applied.
+
+6
+00:01:34,589 --> 00:01:52,295
+Baseline control: LLM leaders, broadcasts, and leader memory are
+disabled.
+
+7
+00:01:52,295 --> 00:02:10,181
+LLM guidance activates the full command cycle with 32 slots and
+0.285 s mean decision time.
+
+8
+00:02:10,181 --> 00:02:28,516
+Playback exposes how broadcasts update resident beliefs, routes,
+placement, abandonment, and safety.
+
+9
+00:02:28,516 --> 00:02:48,465
+Road tiers are visible and computational: they constrain access,
+routing, congestion, and agent choices.
+
+10
+00:02:48,465 --> 00:03:06,979
+One agent contract runs across ten different city networks and
+capacity structures.
+
+11
+00:03:06,979 --> 00:03:25,179
+At 15 minutes, six of eight global cities improve; the effect is
+material but not universal.
+
+12
+00:03:25,179 --> 00:03:44,007
+At 120 minutes, some effects reverse as leadership interacts with
+physical constraints.
+
+13
+00:03:44,007 --> 00:04:00,570
+Local Radeon gfx1100 + ROCm 7.2.1 · Qwen2.5-7B · 32 slots · 88.5
+tok/s.
+
+14
+00:04:00,570 --> 00:04:22,695
+Q4 quantization · full GPU offload · batching · constrained JSON ·
+shared-VRAM protection.
+
+15
+00:04:22,695 --> 00:04:43,430
+Judge proof: open WebGIS → compare baseline/LLM → play → show GPU
+health and validated metrics.
+
+16
+00:04:43,430 --> 00:05:02,325
+Working application + executed Agentic AI tools + measured local
+Radeon/ROCm inference.
