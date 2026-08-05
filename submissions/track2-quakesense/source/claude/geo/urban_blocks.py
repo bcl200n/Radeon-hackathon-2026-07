@@ -1,8 +1,8 @@
-"""Road-enclosed block (街区) extraction and population disaggregation.
+"""Road-enclosed block extraction and population disaggregation.
 
 This module turns an OpenStreetMap road extract into a *planar partition* of
-road-enclosed blocks, which is the spatial unit requested for the Chengdu
-block-scale evacuation experiments.
+road-enclosed blocks, the spatial unit used by the block-scale evacuation
+experiments.
 
 Why planar faces instead of a raster grid
 -----------------------------------------
@@ -38,8 +38,8 @@ Known limitations (do not present these as solved)
   artificial open faces at the edge; these appear as very large faces and are
   removed by ``max_area_m2``.
 * **Not a cadastral or planning boundary.** These are road-enclosed
-  morphological blocks, not 街道/社区 administrative units. Do not label output
-  as an official 街区 division.
+  morphological blocks, not administrative units. Do not label the output as
+  an official administrative division.
 
 The module has no third-party dependency beyond an optional numpy import, so
 it runs on the cloud server and in CI without geopandas/shapely.
@@ -587,8 +587,8 @@ def _infer_grid_size(grid_centres: dict[Any, tuple[float, float]]) -> float:
 def assign_districts(blocks: Sequence[Block], district_geojson: dict) -> int:
     """Point-in-polygon block -> district assignment.
 
-    Deliberately *not* nearest-centroid: Chengdu's districts are elongated and
-    interlocking, and nearest-centroid misassigns a large share of blocks.
+    Deliberately *not* nearest-centroid: municipal districts can be elongated
+    and interlocking, so nearest-centroid assignment can misclassify blocks.
     Returns the number of blocks successfully assigned.
     """
     polygons: list[tuple[str, list[list[tuple[float, float]]], tuple[float, float, float, float]]] = []
@@ -657,7 +657,7 @@ def blocks_from_geojson(
         "attribution": "© OpenStreetMap contributors (ODbL 1.0)",
         "caveats": [
             "Grade-separated crossings do not split blocks unless their highway class is dropped.",
-            "Blocks are morphological road-enclosed faces, not official 街道/社区 boundaries.",
+            "Blocks are morphological road-enclosed faces, not official administrative boundaries.",
             "Faces touching the extract bounding box are removed by the max-area filter.",
         ],
     }

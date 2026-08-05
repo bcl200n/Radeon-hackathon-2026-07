@@ -1,4 +1,4 @@
-"""Block-scale (街区尺度) evacuation engine.
+"""Block-scale evacuation engine.
 
 Design rationale
 ----------------
@@ -26,15 +26,15 @@ road-enclosed blocks**, which is the smallest unit where the physics are real:
 Scaling
 -------
 Population is carried as **continuous stocks in numpy arrays of length
-n_blocks**, not as one Python object per person.  A 50万-1,000,000 person
-scenario over ~28,000 Chengdu blocks is therefore a few hundred float64
-arrays, and a 2-hour simulation at 30 s steps is 240 vectorised steps.
+n_blocks**, not as one Python object per person. A city-scale population
+scenario is represented by a compact set of numeric arrays, and a two-hour
+simulation at 30-second intervals requires 240 vectorised steps.
 Individual agents are materialised only for the rendered sample and for the
 LLM coordinator cohort, which is where per-agent detail is actually observed.
 
-Nothing here is calibrated against an observed Chengdu evacuation, because no
-such observation exists.  Departure curves, participation rates and specific
-flow are documented assumptions with literature-sourced defaults; they are
+Nothing here is claimed as calibration against an observed mass evacuation.
+Departure curves, participation rates, and specific flow are documented
+assumptions with literature-sourced defaults; they are
 reported in the output payload so a reader can see what was assumed.
 """
 
@@ -110,7 +110,7 @@ JAM_DENSITY_PPSM = 5.4
 class BlockScaleConfig:
     """Configuration for a block-scale evacuation run."""
 
-    city: str = "Chengdu"
+    city: str = "public_demo_city"
     seed: int = 42
 
     # --- time ---
@@ -141,13 +141,13 @@ class BlockScaleConfig:
     intra_block_detour: float = 1.4
 
     # --- hazard ---
-    epicenter_lon: float = 103.40
-    epicenter_lat: float = 31.00
+    epicenter_lon: float = 0.0
+    epicenter_lat: float = 0.0
     magnitude: float = 7.0
 
     # --- shelters ---
     #: Persons per square metre of usable shelter area, when capacity has to
-    #: be inferred.  Chinese emergency shelter guidance commonly uses 1.5-2.0
+    #: be inferred. Emergency-shelter guidance commonly uses 1.5-2.0
     #: m^2 per person for short-term open-space refuge.
     shelter_persons_per_m2: float = 0.5
     #: Cap on how far a block may be routed to a shelter, in metres.  Blocks
@@ -248,7 +248,7 @@ def build_block_layer(
     egress_width_by_class: dict[str, float] | None = None,
     resistance_by_block: dict[str, float] | None = None,
 ) -> BlockLayer:
-    """Assemble a :class:`BlockLayer` from :class:`geo.chengdu_blocks.Block`.
+    """Assemble a :class:`BlockLayer` from :class:`geo.urban_blocks.Block`.
 
     Adjacency is derived from shared planar-graph node ids: two blocks are
     neighbours when their rings share at least two consecutive nodes, i.e.
@@ -1121,9 +1121,8 @@ class BlockEvacuationSimulator:
                 # some block routes to it, so a shelter outside the window (or
                 # behind impassable terrain) contributes nothing however large
                 # it is. Reporting only the file total made a 1 M central-urban
-                # window look like it had the whole municipality's 2.5 M of
-                # capacity available to it, when 1,075 of its 1,252 shelters
-                # were nowhere near the simulated area.
+                # window look like it had the whole municipality's capacity
+                # available even when many shelters were outside the scenario.
                 "shelter_capacity_reachable": round(
                     sum(s.capacity for i, s in enumerate(self.shelters)
                         if self._shelter_block[i] >= 0
@@ -1170,8 +1169,7 @@ def load_shelters_geojson(path: Path, config: BlockScaleConfig) -> list[ShelterS
 
     Capacity that has to be inferred is marked in ``provenance`` so downstream
     reporting can distinguish an official figure from an assumption. When the
-    source file already carries its own ``capacity_source`` label (as the
-    2026 AMap-derived Chengdu dataset does, e.g.
+    source file already carries its own ``capacity_source`` label (for example,
     ``scenario_assumption_not_observed``), that label is used verbatim rather
     than being overwritten with a generic "recorded capacity" -- a numeric
     capacity field being *present* doesn't mean it's an *official* figure.

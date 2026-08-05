@@ -115,8 +115,8 @@ def _pack(src, dst, n_blocks, max_degree):
 def _components(neigh, n_blocks):
     """Connected components by iterative label propagation.
 
-    Vectorised rather than a union-find loop: on 82,766 blocks the Python
-    loop takes minutes, this takes under a second.
+    Vectorised rather than a union-find loop so large block layers remain
+    practical without a Python-level union-find pass.
     """
     lab = np.arange(n_blocks, dtype=np.int64)
     nbr = neigh.astype(np.int64)
@@ -135,11 +135,9 @@ def bridge_components(neigh, bx, by, population, max_degree: int = 12,
                       log=print):
     """Connect disjoint components with their shortest inter-component link.
 
-    The Chengdu block layer parses into 1,165 components: outlying towns were
-    polygonised without the road geometry that would tie them to the main
-    fabric. On the raw graph 4.33 % of the population (969,253 people in 5,571
-    blocks) has no path to any shelter at all -- not because they are cut off
-    in reality, but because two polygons 40 m apart do not share an edge.
+    Road-derived block layers can contain disconnected components when the
+    source geometry omits a short connector. That can make residents appear
+    unreachable even when adjacent polygons are only a short walk apart.
 
     Bridging adds, for each stranded component, the single shortest link to an
     already-connected block. This is a topological repair of the input, not a

@@ -11,7 +11,7 @@ import math
 
 import pytest
 
-from geo.chengdu_blocks import (
+from geo.urban_blocks import (
     blocks_from_geojson,
     build_blocks,
     build_road_graph,

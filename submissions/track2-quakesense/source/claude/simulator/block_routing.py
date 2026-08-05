@@ -1,27 +1,22 @@
 """Exact shortest-path routing over the block adjacency graph, on the GPU.
 
-The first P2 run replaced the block-scale engine's single next-hop chain with
-greedy geographic routing, and the result was unambiguous: 20.9 M of 22.4 M
-agents timed out on fatigue while shelters stood 58 % empty. Greedy routing
-walks into local minima -- a block whose every neighbour is farther from the
-goal -- and a street network cut by rivers, rail and ring roads is full of
-them.
+Greedy geographic routing can walk into local minima: a block whose every
+neighbour is farther from the goal. Street networks cut by rivers, rail and
+ring roads contain many such cases, so the simulator uses exact shortest paths.
 
 So compute the real thing. For every (shelter, block) pair we want
 
     dist[s, b]  ->  network distance from block b to shelter s, metres
     pred[s, b]  ->  the next block to step to from b heading for s
 
-Running 1,252 separate Dijkstras on the CPU is the textbook answer and takes a
-minute or so. But all 1,252 are independent and share one graph, which makes
-them a single dense relaxation: hold the whole (1,252 x 82,766) distance matrix
-in VRAM -- 414 MB -- and relax all sources against all 12 neighbour slots at
-once. Bellman-Ford converges in as many rounds as the graph's hop diameter, and
-each round is twelve gathers over a matrix that never leaves the GPU.
+Running one Dijkstra search per shelter on the CPU is the textbook answer.
+Because the searches are independent and share one graph, they can instead be
+processed as batched dense relaxations on the GPU. Bellman-Ford converges in as
+many rounds as the graph's hop diameter, with each round performing neighbour
+gathers over matrices that remain in device memory.
 
-That is the answer to "does this use the hardware": the routing table is 414 MB
-of the 34 GB free, and it turns next-hop selection from a neighbourhood search
-into one gather.
+This turns next-hop selection from a neighbourhood search into one gather and
+makes the routing workload an explicit Radeon acceleration target.
 """
 
 from __future__ import annotations
@@ -56,12 +51,11 @@ def build_routing(neigh: np.ndarray, bx: np.ndarray, by: np.ndarray,
                   budget_gib: float = 4.0, log=print):
     """Return ``(dist, pred)`` as ``(n_shelters, n_blocks)`` float32/int32.
 
-    Sources are relaxed in batches sized to a memory budget. Chengdu's
-    1,252 x 82,766 matrix is 414 MB and fits whole, but Taipei has 34,459
-    shelters and Los Angeles 233,108 blocks, so the full matrix plus the gather
-    temporary exceeded the cap and the run died in the routing build. Batching
-    the source dimension leaves the result identical -- each source's shortest
-    paths are independent -- and bounds the working set.
+    Sources are relaxed in batches sized to a memory budget. Large cities can
+    exceed the device-memory cap when the full distance matrix and gather
+    temporary are materialised together. Batching the source dimension leaves
+    the result identical because each source's shortest paths are independent,
+    while bounding the working set.
     """
     ns_total = len(shelter_blocks)
     nb_total = neigh.shape[0]
@@ -115,7 +109,7 @@ def _build_batch(neigh, bx, by, shelter_blocks, device, max_rounds,
             prev = dist.clone()
         for j in range(D):
             # Relaxing one neighbour slot at a time keeps the temporary at
-            # (ns, nb) instead of (ns, nb, D) -- 414 MB rather than 5 GB.
+            # (ns, nb) instead of (ns, nb, D), avoiding a much larger tensor.
             cand = dist[:, nbr[:, j].clamp_min(0)] + w[:, j].unsqueeze(0)
             torch.minimum(dist, cand, out=dist)
         if prev is not None and bool(torch.equal(dist, prev)):

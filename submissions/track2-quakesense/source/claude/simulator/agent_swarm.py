@@ -1,10 +1,9 @@
 """Full-population individual evacuation, vectorised on GPU.
 
 Every resident is an individual with their own position, target, fatigue and
-role -- but no resident is a Python object. State lives in parallel tensors:
-338 bytes per agent once individual belief and a 32-hop trajectory are carried,
-so 22.4 M Chengdu residents occupy 7.05 GB and fit entirely in the 48 GB
-Radeon's memory alongside the block fields, the routing tables and the model.
+role -- but no resident is a Python object. State lives in parallel tensors so
+large populations can remain device-resident alongside block fields, routing
+tables, and the local model.
 
 (An earlier version of this file claimed 27 B/agent. That covered kinematics
 only and could not represent mutual help, information provenance or individual
@@ -43,11 +42,8 @@ S_INDOORS, S_TO_BOUNDARY, S_QUEUED, S_TRANSIT, S_SHELTERED, S_GAVEUP = range(6)
 
 # Role enum, stored as int8.
 #
-# Leadership is tiered to match how Chinese municipal emergency management is
-# actually organised, rather than invented: Chengdu has ~20 districts, ~330
-# subdistricts/towns, ~3,200 communities/villages, and a grid-management
-# (网格化) tier below that. A flat "1,000 leaders" is both unrealistic and
-# sparser than the real community tier by a factor of three.
+# Leadership is tiered so a deployment can represent district, subdistrict,
+# community, and neighborhood roles without assuming a flat leader pool.
 #
 # LLM coordination is a PROPERTY OF THE TOP TIERS, not a separate role: a
 # district or subdistrict commander is a leader who happens to reason with a
@@ -76,9 +72,8 @@ E_DEPART, E_RETARGET, E_ARRIVE, E_REJECTED, E_GAVEUP, E_HELPED = range(6)
 class SwarmConfig:
     """Behavioural and numerical parameters.
 
-    None of the behavioural parameters are calibrated against an observed
-    Chengdu evacuation -- no such observation exists. They are literature-range
-    defaults and MUST be reported as assumptions and swept for sensitivity.
+    Behavioural parameters are literature-range scenario defaults. They MUST
+    be reported as assumptions and swept for sensitivity.
     """
 
     step_seconds: float = 10.0
@@ -90,7 +85,7 @@ class SwarmConfig:
 
     # -- R2 destination choice --
     #: How many nearest shelters an agent will even consider. Nobody evaluates
-    #: all 1,252 shelters in a city; this is both realism and the main memory
+    #: every shelter in a city; this is both realism and the main memory
     #: lever on the belief field.
     n_candidates: int = 32
     #: Logit temperature. tau -> 0 reproduces deterministic nearest-shelter
@@ -111,8 +106,8 @@ class SwarmConfig:
 
     # -- R4 information --
     #: Share of residents who know their nearest shelter when the quake hits.
-    #: There is no awareness survey for Chengdu, so this is an assumption to be
-    #: swept, and it is the single parameter that decides whether the leader
+    #: This is a scenario assumption to be swept, and it is the single
+    #: parameter that decides whether the leader
     #: tier has anything to contribute.
     frac_knows_one: float = 0.30
     #: Share who also know the second-nearest. Subset of the above.
@@ -160,21 +155,18 @@ class SwarmConfig:
     frac_slow: float = 0.18
     #: Share able to assist a slower neighbour in the same block.
     frac_helper: float = 0.10
-    #: Leadership counts, defaulted to Chengdu's real administrative tiers.
-    #: For another city, scale these to its own structure rather than reusing
-    #: Chengdu's numbers -- they are institutional facts, not tuning knobs.
-    n_district: int = 20          # 区县:      1 per ~1.12 M residents
-    n_subdistrict: int = 330      # 街道/镇:   1 per ~68 k
-    n_community: int = 3_200      # 社区/村:   1 per ~7 k
-    n_grid: int = 30_000          # 网格员:    1 per ~750
+    #: Generic deployment defaults; replace them with the target city's
+    #: documented institutional structure.
+    n_district: int = 16
+    n_subdistrict: int = 256
+    n_community: int = 2_048
+    n_grid: int = 30_000
     #: Simulated minutes between successive LLM decisions for an LLM-driven
-    #: leader. At 1.106 s per decision (measured on the Radeon), 350 LLM
-    #: leaders deciding every 10 simulated minutes is ~1.8 h serial, and less
-    #: when the llama.cpp server batches concurrent slots.
+    #: leader. Wall time decreases when the llama.cpp server batches concurrent
+    #: slots; the exact throughput depends on the selected local model.
     llm_decision_interval_min: float = 10.0
     #: How many of the community-tier leaders are LLM-driven rather than
-    #: rule-driven. 0 keeps the model at district + subdistrict (350 leaders);
-    #: 650 brings the total to 1,000. Cost is linear in this number, and the
+    #: rule-driven. Cost is approximately linear in this number, and the
     #: LLM tier is what dominates wall clock, so this is the main cost knob.
     n_llm_community: int = 0
     #: Share of people in a block who act on a broadcast that reaches it. A
@@ -264,10 +256,8 @@ class AgentSwarm:
                  if len(self.leader_ids.get(t_, []))]
         # Below that, LLM support reaches only part of the community tier: it
         # is a deployment depth, not a property of the tier. Scaling here keeps
-        # the administrative structure honest -- Chengdu has ~330 subdistricts
-        # and inflating that number to reach a leader count would be fiction,
-        # whereas "the model runs for 650 of the 3,200 communities" is a real
-        # thing a city could decide to do.
+        # the administrative structure honest: model coverage depth is a
+        # deployment choice and must not be disguised by inflating tier sizes.
         n_c = int(min(self.cfg.n_llm_community, len(self.leader_ids.get(R_COMMUNITY, []))))
         if n_c > 0:
             parts.append(self.leader_ids[R_COMMUNITY][:n_c])
@@ -297,7 +287,7 @@ class AgentSwarm:
 
         Restricting choice to K candidates is what keeps the belief field at
         n_blocks x K instead of n_blocks x n_shelters, and it is the honest
-        model of a person's option set: nobody weighs 1,252 shelters.
+        model of a person's option set: nobody weighs every city shelter.
         """
         K = min(self.cfg.n_candidates, self.n_shelters)
         blon = np.asarray(self.layer.lon, dtype=np.float64)
@@ -309,7 +299,7 @@ class AgentSwarm:
         cand = np.zeros((self.n_blocks, K), dtype=np.int32)
         cdist = np.zeros((self.n_blocks, K), dtype=np.float32)
         # Chunk so the n_blocks x n_shelters distance matrix never materialises
-        # in full (82,766 x 1,252 would be 414 MB in float64).
+        # in full for a large city.
         chunk = max(1, int(2e7 // max(self.n_shelters, 1)))
         for start in range(0, self.n_blocks, chunk):
             end = min(start + chunk, self.n_blocks)

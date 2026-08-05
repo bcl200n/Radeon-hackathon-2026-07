@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a city's block-scale (街区尺度) evacuation dataset and simulation.
+"""Build a city's block-scale evacuation dataset and simulation.
 
 City-agnostic by design: the road-enclosed block extraction, population
 disaggregation, capacity-constrained simulation and rendered-agent sampling
@@ -8,8 +8,7 @@ are the same code path for every city. Only the *inputs* differ per city:
 * ``--roads``: OSM road extract (GeoJSON) -- always OSM, always the same reader.
 * Population, one of:
     - ``--population`` + ``--population-key``: a census/land-use-calibrated
-      grid payload (currently only Chengdu has this -- seventh-census
-      district totals are not available for other cities in this project).
+      grid payload, when one is available for the study city.
     - ``--population-raster``: a population GeoTIFF (WorldPop or similar)
       clipped to ``--bbox``. This is the default path for every other city:
       no invented per-city calibration, just the raster's own pixel values.
@@ -21,24 +20,12 @@ are the same code path for every city. Only the *inputs* differ per city:
   local shelter data automatically gets better results without any code
   change, and a city with nothing yet still runs on the same assumptions.
 
-Example (Chengdu, census-calibrated population)
--------------------------------------------------
-    python scripts/build_city_block_evacuation.py \\
-        --city Chengdu \\
-        --roads data/external/chengdu_roads.geojson \\
-        --population chengdu_25m_dynamic.json \\
-        --shelters data/chengdu_shelters/final/chengdu_emergency_shelters_final_wgs84.geojson \\
-        --bbox 103.95 30.55 104.20 30.78 \\
-        --target-population 1000000 \\
-        --epicenter 104.05 30.70 --magnitude 6.5 \\
-        --output-dir results/chengdu_blocks
-
 Example (Naples, raw WorldPop population raster)
 -------------------------------------------------
     python scripts/build_city_block_evacuation.py \\
         --city Naples \\
         --roads data/external/naples_roads.geojson \\
-        --population-raster /workspace/persistence/worldpop/ita_ppp_2020_1km_Aggregated_UNadj.tif \\
+        --population-raster data/worldpop/ita_ppp_2020_1km_Aggregated_UNadj.tif \\
         --shelters data/multi_city/naples/shelters.geojson \\
         --bbox 14.14 40.79 14.35 40.92 \\
         --epicenter 14.27 40.84 --magnitude 6.5 \\
@@ -56,7 +43,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from geo.chengdu_blocks import (            # noqa: E402
+from geo.urban_blocks import (            # noqa: E402
     assign_districts,
     blocks_from_geojson,
     disaggregate_population,
@@ -73,10 +60,10 @@ from simulator.block_scale import (         # noqa: E402
 def load_grid_population(path: Path, key: str) -> tuple[dict, dict]:
     """Read grid centres and population from a census/land-use payload.
 
-    Accepts the ``chengdu_25m_dynamic.json`` layout: ``grids`` is a list of
+    Accepts a calibrated grid JSON layout: ``grids`` is a list of
     ``[grid_id, lon, lat]`` and ``home_population_25m`` / ``frames_25m[i]`` are
     parallel population arrays. This path is only available for cities that
-    have gone through a census-calibration pipeline (currently just Chengdu).
+    have gone through a census-calibration pipeline.
     """
     payload = json.loads(Path(path).read_text(encoding="utf-8"))
     grids = payload["grids"]
@@ -109,7 +96,7 @@ def main() -> None:
 
     pop_group = parser.add_mutually_exclusive_group(required=True)
     pop_group.add_argument("--population", type=Path,
-                           help="Census/land-use-calibrated grid JSON (Chengdu-style).")
+                           help="Census/land-use-calibrated grid JSON.")
     pop_group.add_argument("--population-raster", type=Path,
                            help="Population GeoTIFF (e.g. WorldPop), clipped to --bbox.")
     parser.add_argument("--population-key", default="home_population_25m",

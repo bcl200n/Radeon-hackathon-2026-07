@@ -10,7 +10,7 @@ Example
 -------
     python scripts/run_site_selection.py \\
         --roads data/external/naples_roads.geojson \\
-        --population-raster /workspace/persistence/worldpop/ita_ppp_2020_1km_Aggregated_UNadj.tif \\
+        --population-raster data/worldpop/ita_ppp_2020_1km_Aggregated_UNadj.tif \\
         --shelters data/multi_city/naples/shelters.geojson \\
         --bbox 14.14 40.79 14.35 40.92 \\
         --epicenter 14.25 40.84 --magnitude 6.5 \\
@@ -28,7 +28,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from geo.chengdu_blocks import blocks_from_geojson, disaggregate_population  # noqa: E402
+from geo.urban_blocks import blocks_from_geojson, disaggregate_population  # noqa: E402
 from geo.population_raster import grid_from_raster  # noqa: E402
 from scripts.build_city_block_evacuation import clip_blocks, load_grid_population  # noqa: E402
 from simulator.block_scale import (  # noqa: E402

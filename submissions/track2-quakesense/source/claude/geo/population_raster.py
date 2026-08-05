@@ -1,9 +1,9 @@
 """Turn a population GeoTIFF (e.g. WorldPop) into the grid dicts that
-``geo.chengdu_blocks.disaggregate_population`` expects.
+``geo.urban_blocks.disaggregate_population`` expects.
 
-This exists so a city with no census/land-use calibration pipeline (i.e.
-every city except Chengdu, for now) can still feed the same block-scale
-engine: ``disaggregate_population`` only needs ``{cell_id: population}`` and
+This allows a city without a census/land-use calibration pipeline to feed the
+same block-scale engine: ``disaggregate_population`` only needs
+``{cell_id: population}`` and
 ``{cell_id: (lon, lat)}`` for the coarse cells, which is exactly what a
 population raster's pixels are. WorldPop's own pixel values become the "real"
 population source, honestly labelled as-is -- no invented city-specific

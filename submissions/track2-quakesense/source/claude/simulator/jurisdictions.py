@@ -1,18 +1,7 @@
 """Equal-population jurisdictions for the leader tier.
 
-Leaders were previously drawn as random agents, with every block assigned to
-its nearest leader. Leader *density* came out right -- agents are distributed
-in proportion to population, so a district with twice the people gets twice the
-leaders -- but jurisdiction *size* did not:
-
-    350 leaders    p5  14,040   p50  56,223   p100 298,113   ratio 9.9x
-    1,000 leaders  p5       0   p50  19,571   p100 109,237   ratio 48,628x
-                                              53 jurisdictions with nobody in them
-
-Randomly scattered seeds compete for territory, and the losers end up empty.
-At 1,000 leaders that wasted 53 LLM calls per round on jurisdictions with no
-one to direct, and left one leader responsible for 109,237 people while another
-had none. "One commander, one area" stops meaning anything.
+Randomly scattered leader seeds can produce empty or severely imbalanced
+jurisdictions, wasting LLM calls and undermining a meaningful span of control.
 
 So partition deliberately instead. Order the blocks along a Hilbert curve and
 cut the sequence wherever cumulative population reaches the next 1/k share.
@@ -21,19 +10,17 @@ each other in the ordering, every contiguous run of the sequence is a compact
 patch of city -- so the cuts give jurisdictions that are both equal in
 population and spatially coherent, with no iteration and no empty cells.
 
-This is a partition of convenience, not Chengdu's real subdistrict boundaries.
-Those would need the administrative boundary vectors, which this project does
-not have; see docs/ROADMAP_FULL_SCALE_AGENTS.md. What it does honestly claim is
-a defensible span of control per leader.
+This is a partition of convenience, not a claim to reproduce any city's real
+administrative boundaries. It provides a reproducible and defensible span of
+control when public administrative vectors are unavailable.
 """
 
 from __future__ import annotations
 
 import numpy as np
 
-#: Hilbert grid resolution. 2^16 cells across Chengdu's ~200 km extent is
-#: roughly 3 m -- far finer than a block, so the ordering never has to break a
-#: tie between two blocks that share a cell.
+#: Hilbert grid resolution. A 2^16 grid is fine enough for typical city-scale
+#: block layers, so the ordering rarely has to break a spatial tie.
 _ORDER = 16
 
 

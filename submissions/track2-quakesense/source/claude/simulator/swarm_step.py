@@ -207,7 +207,7 @@ class SwarmStepper:
 
         # ---- exact routing tables -------------------------------------------
         # (n_shelters, n_blocks): the next block toward a shelter, and the
-        # network distance to it. 414 MB each, which buys O(1) exact routing
+        # network distance to it. This buys O(1) exact routing
         # in place of a neighbourhood search that could not escape local minima.
         if route_pred is None or route_dist is None:
             raise ValueError("route_pred/route_dist are required: greedy "
@@ -233,13 +233,10 @@ class SwarmStepper:
         #: people standing in the block pick it up. This is the information
         #: channel; bbelief is the opinion channel.
         self.bknown = torch.zeros(self.nb, dtype=torch.int32, device=d)
-        # Density divides by the ground people can actually stand on, not by
-        # the whole block. Buildings occupy a measured 22.7 % of a central
-        # Chengdu block (median over 8,474 blocks with footprint coverage), so
-        # the open share is 0.773 -- courtyards and the gaps between buildings
-        # count, not just the carriageway. Blocks without footprint data keep
-        # the full polygon rather than inheriting the centre's ratio: eight of
-        # the twenty districts are uncovered and are mostly farmland.
+        # Density divides by usable open ground, not the whole block. When a
+        # footprint-derived open share is available, courtyards and gaps between
+        # buildings count as usable space. Missing values retain the full block
+        # area instead of borrowing a ratio from another neighbourhood.
         area = np.maximum(
             np.asarray(getattr(swarm.layer, "area_m2", np.full(self.nb, 40_000.0)),
                        dtype=np.float32), 1_000.0)
@@ -286,7 +283,7 @@ class SwarmStepper:
         self._gen.manual_seed(self.cfg.seed)
 
         # Who knows anything at the moment the ground shakes. The share is an
-        # assumption -- there is no survey of shelter awareness in Chengdu --
+        # assumption rather than a surveyed city-specific constant,
         # so it is a config knob to be swept, not a calibrated constant. Seeded
         # after the generator exists, which is why it is down here.
         self._seed_knowledge()
@@ -488,9 +485,8 @@ class SwarmStepper:
 
         Without this the belief field is write-only after departure: a target
         is chosen once and only a rejection at the shelter door can revise it.
-        Measured on the first full run, 87 % of agents never reconsidered
-        (mean_switches 0.13), which made the entire leader tier decorative --
-        350 commanders broadcasting to a population that had stopped listening.
+        Without re-evaluation, most agents retain their initial target and the
+        leader tier has little effect on a population that has stopped listening.
 
         Two things make someone reconsider, and both are local:
 
@@ -622,9 +618,9 @@ class SwarmStepper:
     def _k3_diffuse(self):
         """Word of mouth spreads one block per step and decays with staleness.
 
-        Gathering (n_blocks, D, K) is 82,766 x 12 x 16 floats = 61 MB, which is
-        why the belief field is per-block and truncated to K candidates: the
-        same operation on individuals would be 22.4 M x 12 x 16.
+        The belief field is stored per block and truncated to K candidates so
+        neighbourhood gathers remain bounded; the equivalent individual-level
+        tensor would be substantially larger.
         """
         nbr = self.neigh.clamp_min(0).to(torch.int64)
         vals = self.bbelief[nbr]                                   # (nb, D, K)
@@ -957,7 +953,7 @@ class SwarmStepper:
             "sheltered": sheltered,
             "gave_up": gaveup,
             # Three different failures that the block-scale engine reported as
-            # one number. Which of them dominates decides whether Chengdu needs
+            # one number. Which dominates indicates whether the scenario needs
             # more shelters, better routes, or neither.
             "gave_up_no_path": int(self.no_path.sum().item()),
             "gave_up_exhausted": gaveup - int(self.no_path.sum().item()),

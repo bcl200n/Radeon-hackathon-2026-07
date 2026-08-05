@@ -65,7 +65,7 @@ def main():
 
     if "k=0%" not in data:
         return
-    print("\n差异 vs k=0%,以及相对种子间标准差的倍数:")
+    print("\nDifference vs k=0%, relative to between-seed standard deviation:")
     base = data["k=0%"]
     for g in [k for k in data if k != "k=0%"]:
         print(f"\n  {g}")
@@ -77,11 +77,11 @@ def main():
             pooled = ((sb ** 2 + sv ** 2) / 2) ** 0.5
             diff = mv - mb
             ratio = abs(diff) / pooled if pooled > 0 else float("inf")
-            verdict = ("稳健" if ratio > 3 else
-                       "边缘" if ratio > 1.5 else "噪声内")
+            verdict = ("robust" if ratio > 3 else
+                       "borderline" if ratio > 1.5 else "within noise")
             pct = diff / mb * 100 if mb else 0.0
             print(f"    {m:<26}{fmt.format(diff):>18}  ({pct:+6.2f}%)  "
-                  f"{ratio:>7.1f}× 种子标准差   {verdict}")
+                  f"{ratio:>7.1f}x seed standard deviation   {verdict}")
 
 
 if __name__ == "__main__":

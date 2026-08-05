@@ -71,8 +71,12 @@ def sample_chunk(points: list[dict], scale: int, retries: int = 4) -> list[dict]
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--centroids", type=Path, required=True)
-    p.add_argument("--key", type=Path,
-                   default=Path(r"C:\Users\chunlin\Desktop\ee-bianchunlin28345-4b49ec9c87b9.json"))
+    p.add_argument(
+        "--key",
+        type=Path,
+        required=True,
+        help="Path to a local Earth Engine service-account JSON file; never commit it.",
+    )
     p.add_argument("--chunk-size", type=int, default=400)
     p.add_argument("--scale", type=int, default=30, help="sampling scale in metres (SRTM native ~30 m)")
     p.add_argument(

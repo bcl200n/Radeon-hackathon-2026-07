@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from geo.chengdu_blocks import build_blocks, build_road_graph, extract_faces, prune_dangling
+from geo.urban_blocks import build_blocks, build_road_graph, extract_faces, prune_dangling
 from simulator.block_scale import BlockScaleConfig, ShelterSite, build_block_layer
 from simulator.site_selection import greedy_shelter_siting
 

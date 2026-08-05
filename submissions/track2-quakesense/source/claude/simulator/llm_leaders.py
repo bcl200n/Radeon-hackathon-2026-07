@@ -1,9 +1,8 @@
 """The LLM-driven leader tier.
 
-Chengdu's emergency management is tiered: ~20 districts, ~330 subdistricts,
-~3,200 communities, and a grid-management layer below. Everything from the
-subdistrict up -- 350 people -- reasons with the local language model instead
-of a fixed rule. The rest are still leaders; they just follow the rule policy.
+The simulator supports a configurable hierarchy of local coordinators. A
+selected cohort reasons with the locally deployed language model instead of a
+fixed rule, while the remaining coordinators follow the deterministic policy.
 
 What a leader does is not move differently. A leader changes the *beliefs* of
 the blocks in their jurisdiction, which is how one person redirects thousands
@@ -11,11 +10,9 @@ without any central scheduler. That matters for the argument the paper makes:
 under loss of power, water and network, guidance has to be local and
 distributed, not top-down.
 
-Concurrency is the whole cost story. One decision measured 1.106 s on this
-Radeon; 350 leaders x 18 rounds is 6,300 calls, which is 1.94 h serial. The
-llama.cpp server is run with 32 slots and continuous batching, and this module
-keeps all of them busy with a thread pool -- threads, not processes, because
-the GIL is released across the socket read.
+Concurrency is central to performance. The llama.cpp server can run multiple
+slots with continuous batching, and this module keeps them busy with a thread
+pool. Threads are sufficient because the GIL is released across socket reads.
 """
 
 from __future__ import annotations
@@ -37,7 +34,7 @@ from .jurisdictions import equal_population_partition, partition_report
 #: The leader action meaning "hold where you are", as opposed to a shelter id.
 HOLD = -1
 
-_PROMPT = """You direct evacuation for {tier} {lid} in Chengdu after a major earthquake.
+_PROMPT = """You direct evacuation for {tier} {lid} in a city after a major earthquake.
 
 Your area right now:
 - {n_transit} people still walking, {n_sheltered} already sheltered
@@ -152,7 +149,7 @@ class LeaderTier:
              for j, s in enumerate(seed)], dtype=np.int64)
         # What each leader BELIEVES about every shelter's occupancy, and how
         # stale that belief is. Reading st.occupancy directly made every leader
-        # omniscient about all 1,252 shelters, which is both unrealistic and
+        # omniscient about all shelters, which is both unrealistic and
         # self-defeating: if everyone already knows, there is nothing for
         # leaders to tell each other and communication efficiency cannot matter.
         #
@@ -528,8 +525,8 @@ class LeaderTier:
             st.bbelief[mask] = bb.clamp_min(-600.0)
 
         # Attribute influence in one pass. Doing it inside the loop would gather
-        # over all 22.4 M agents once per leader -- 350 passes for what is one
-        # lookup through the block's jurisdiction.
+        # over all agents once per leader instead of using one lookup through
+        # the block's jurisdiction.
         moved = [k for k, r in zip(blocks_for, send) if r and r[0] >= 0]
         decided = torch.zeros(self.n_leaders, dtype=torch.bool, device=st.dev)
         if moved:

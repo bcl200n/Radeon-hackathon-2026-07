@@ -13,9 +13,8 @@ Two independent, individually testable pieces:
   with no land-cover dependence.
 * ``LANDCOVER_RESISTANCE`` / ``resistance_from_landcover`` -- a hand-set
   friction table by ESA WorldCover v200 class, the same product already used
-  elsewhere in this project for population disaggregation (see
-  scripts/build_chengdu_census_landuse_alignment.py), so no new land-cover
-  source is introduced.
+  elsewhere in this project for population disaggregation, so no new
+  land-cover source is introduced.
 
 ``combined_resistance`` multiplies the two into the single per-block
 ``BlockLayer.resistance`` value the routing/timing code consumes; either

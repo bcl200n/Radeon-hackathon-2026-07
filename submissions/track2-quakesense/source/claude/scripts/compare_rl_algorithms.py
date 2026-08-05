@@ -24,7 +24,7 @@ Example
 -------
     python scripts/compare_rl_algorithms.py \\
         --roads ../data/external/naples_roads.geojson \\
-        --population-raster /workspace/persistence/worldpop/ita_ppp_2020_1km_Aggregated_UNadj.tif \\
+        --population-raster data/worldpop/ita_ppp_2020_1km_Aggregated_UNadj.tif \\
         --shelters ../data/multi_city/naples/shelters.geojson \\
         --bbox 14.14 40.79 14.35 40.92 \\
         --duration-minutes 180 --episodes 20 \\
@@ -43,7 +43,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from geo.chengdu_blocks import blocks_from_geojson  # noqa: E402
+from geo.urban_blocks import blocks_from_geojson  # noqa: E402
 from geo.population_raster import grid_from_raster  # noqa: E402
 from rl.shelter_agents import ShelterAgentConfig, SharedQLearningShelterAgents, TDShelterAgents  # noqa: E402
 from scripts.build_city_block_evacuation import clip_blocks, load_grid_population  # noqa: E402
@@ -100,7 +100,7 @@ def main() -> None:
         grid_population, centres, _ = grid_from_raster(args.population_raster, tuple(args.bbox))
     else:
         centres, grid_population = load_grid_population(args.population, args.population_key)
-    from geo.chengdu_blocks import disaggregate_population
+    from geo.urban_blocks import disaggregate_population
     result = disaggregate_population(blocks, grid_population, centres)
     for block in blocks:
         block.population = result["assigned"].get(block.block_id, 0.0)

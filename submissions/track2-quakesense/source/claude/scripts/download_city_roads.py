@@ -4,10 +4,9 @@ under data/multi_city/<city>/ (population + shelters, from
 scripts/download_multi_city_data.py), so the block-scale pipeline
 (scripts/build_city_block_evacuation.py) can run for them too.
 
-Only two cities (Chengdu, Naples) currently have a roads GeoJSON under
-data/external/; the rest have population+shelter data but no road network,
-which is what road-enclosed block extraction needs. This script closes that
-gap using the same Overpass API + mirror-fallback approach already used for
+Some scenarios have population and shelter data but no road network, which
+road-enclosed block extraction needs. This script closes that gap using an
+Overpass API plus mirror-fallback approach for
 shelters in scripts/download_multi_city_data.py, reading each city's bbox
 from its existing data/multi_city/<city>/summary.json rather than
 duplicating bbox definitions.
