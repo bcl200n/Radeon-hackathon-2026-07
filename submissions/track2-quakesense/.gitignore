@@ -8,3 +8,13 @@ __pycache__/
 *.tif
 *.tiff
 *.log.tmp
+demo/
+docs/
+evidence/
+source/webgis/site/
+source/rag_knowledge/
+*.pptx
+*.mp4
+*.srt
+summary.json
+results.json
