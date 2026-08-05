@@ -1,0 +1,100 @@
+{
+  "cities_ok": 10,
+  "cities_total": 10,
+  "total_agents": 51853775,
+  "total_agent_steps": 56002077000,
+  "total_wall_s": 445.4,
+  "agent_steps_per_s": 125743910,
+  "rows": [
+    {
+      "city": "chengdu",
+      "n_agents": 18868396,
+      "steps": 1080,
+      "wall_s": 135.59,
+      "ms_per_step": 125.546,
+      "peak_vram_gib": 11.047,
+      "sheltered": 1694057
+    },
+    {
+      "city": "xian",
+      "n_agents": 12952879,
+      "steps": 1080,
+      "wall_s": 88.66,
+      "ms_per_step": 82.09,
+      "peak_vram_gib": 8.302,
+      "sheltered": 2987983
+    },
+    {
+      "city": "los_angeles",
+      "n_agents": 6280434,
+      "steps": 1080,
+      "wall_s": 23.99,
+      "ms_per_step": 22.216,
+      "peak_vram_gib": 11.607,
+      "sheltered": 3826762
+    },
+    {
+      "city": "taipei",
+      "n_agents": 4436897,
+      "steps": 1080,
+      "wall_s": 23.24,
+      "ms_per_step": 21.521,
+      "peak_vram_gib": 3.34,
+      "sheltered": 2883715
+    },
+    {
+      "city": "kathmandu",
+      "n_agents": 5705184,
+      "steps": 1080,
+      "wall_s": 36.82,
+      "ms_per_step": 34.091,
+      "peak_vram_gib": 4.641,
+      "sheltered": 2891288
+    },
+    {
+      "city": "mandalay",
+      "n_agents": 1860483,
+      "steps": 1080,
+      "wall_s": 17.35,
+      "ms_per_step": 16.062,
+      "peak_vram_gib": 1.558,
+      "sheltered": 387546
+    },
+    {
+      "city": "naples",
+      "n_agents": 1399733,
+      "steps": 1080,
+      "wall_s": 11.45,
+      "ms_per_step": 10.6,
+      "peak_vram_gib": 0.984,
+      "sheltered": 747097
+    },
+    {
+      "city": "wellington",
+      "n_agents": 219933,
+      "steps": 1080,
+      "wall_s": 6.4,
+      "ms_per_step": 5.926,
+      "peak_vram_gib": 0.214,
+      "sheltered": 189081
+    },
+    {
+      "city": "l_aquila",
+      "n_agents": 67257,
+      "steps": 1080,
+      "wall_s": 6.19,
+      "ms_per_step": 5.73,
+      "peak_vram_gib": 0.092,
+      "sheltered": 43426
+    },
+    {
+      "city": "noto",
+      "n_agents": 62579,
+      "steps": 1080,
+      "wall_s": 6.26,
+      "ms_per_step": 5.794,
+      "peak_vram_gib": 0.092,
+      "sheltered": 50384
+    }
+  ]
+}

@@ -166,6 +166,25 @@ The raw summary and log are included in `evidence/xian_llm_run/`.
 | Overfilled shelters | 0 |
 | Peak simulator VRAM | 8.34 GiB |
 
+### 7.1 Maximum ten-city baseline scale
+
+The same simulator pipeline was also measured across ten full-population city
+runs on the Radeon host. The aggregate evidence is committed under
+`evidence/max_scale_run/`.
+
+| Metric | Result |
+|---|---:|
+| Resident agents | 51,853,775 |
+| Agent-steps | 56.0 billion |
+| Wall-clock | 445 s |
+| Throughput | 126 million agent-steps/s |
+| Peak GPU utilization | 98% |
+| Peak VRAM | 27.7 GiB |
+
+This is baseline simulator scale evidence. The local LLM leader execution is
+demonstrated by the measured Xi'an run above; the specification does not claim
+that every resident is an LLM instance.
+
 ## 8. Practical result
 
 Leadership changes evacuation trajectories, but the direction depends on the

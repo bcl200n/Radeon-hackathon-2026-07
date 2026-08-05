@@ -1,79 +1,303 @@
-﻿1
-00:00:00,000 --> 00:00:19,632
-We developed QuakeSense: local LLM leaders + resident agents +
-real city networks + an inspectable WebGIS.
+1
+00:00:00,000 --> 00:00:04,399
+QuakeSense is a working Agentic AI system for earthquake evacuation.
 
 2
-00:00:19,632 --> 00:00:37,416
-60 points: functional value, innovation, UX. 40 points: AMD Radeon
-+ ROCm local inference and optimization.
+00:00:04,399 --> 00:00:09,238
+It combines a city-scale resident simulator, jurisdiction leaders that reason and
 
 3
-00:00:37,416 --> 00:00:59,352
-Real inputs → agent reasoning → validated tools → simulator state
-change → inspectable WebGIS.
+00:00:09,238 --> 00:00:14,077
+call tools, an English WebGIS for inspection, and local language-model inference
 
 4
-00:00:59,352 --> 00:01:20,136
-Every 10 minutes: observe → reason with memory → plan → validated
-tool → execute → replan.
+00:00:14,077 --> 00:00:16,716
+accelerated on AMD Radeon through ROCm.
 
 5
-00:01:20,136 --> 00:01:39,960
-Xi'an: 350 leaders · 4,242 decisions · 0 failed or unparseable ·
-100% applied.
+00:00:17,066 --> 00:00:20,836
+The operational question is not whether an alert can be sent.
 
 6
-00:01:39,960 --> 00:01:58,656
-Baseline control: LLM leaders, broadcasts, and leader memory are
-disabled.
+00:00:20,836 --> 00:00:24,607
+It is whether millions of residents can reach limited shelter capacity
 
 7
-00:01:58,656 --> 00:02:17,544
-LLM guidance activates the full command cycle with 32 slots and
-0.285 s mean decision time.
+00:00:24,607 --> 00:00:28,377
+through a damaged road network, while information, congestion, and local decisions
 
 8
-00:02:17,544 --> 00:02:36,912
-Playback exposes how broadcasts update resident beliefs, routes,
-placement, abandonment, and safety.
+00:00:28,377 --> 00:00:29,748
+change minute by minute.
 
 9
-00:02:36,912 --> 00:02:58,008
-Road tiers are visible and computational: they constrain access,
-routing, congestion, and agent choices.
+00:00:30,098 --> 00:00:34,458
+Each jurisdiction leader observes local occupancy, road state, shelter pressure, and
 
 10
-00:02:58,008 --> 00:03:17,568
-One agent contract runs across ten different city networks and
-capacity structures.
+00:00:34,458 --> 00:00:35,251
+resident belief.
 
 11
-00:03:17,568 --> 00:03:36,792
-At 15 minutes, six of eight global cities improve; the effect is
-material but not universal.
+00:00:35,251 --> 00:00:39,612
+It plans a structured action, calls the simulator tools, and writes
 
 12
-00:03:36,792 --> 00:03:56,688
-At 120 minutes, some effects reverse as leadership interacts with
-physical constraints.
+00:00:39,612 --> 00:00:42,783
+the result back into the shared city state.
 
 13
-00:03:56,688 --> 00:04:14,160
-Local Radeon gfx1100 + ROCm 7.2.1 · Qwen2.5-7B · 32 slots · 88.5
-tok/s.
+00:00:42,783 --> 00:00:45,558
+Residents then move under that updated policy.
 
 14
-00:04:14,160 --> 00:04:37,584
-Q4 quantization · full GPU offload · batching · constrained JSON ·
-shared-VRAM protection.
+00:00:45,908 --> 00:00:48,375
+This is a true closed loop.
 
 15
-00:04:37,584 --> 00:04:59,520
-Judge proof: open WebGIS → compare baseline/LLM → play → show GPU
-health and validated metrics.
+00:00:48,375 --> 00:00:52,898
+The scheduler advances time, leaders receive compact memory, the local model
 
 16
-00:04:59,520 --> 00:05:19,488
-Working application + executed Agentic AI tools + measured local
-Radeon/ROCm inference.
+00:00:52,898 --> 00:00:57,421
+returns constrained JSON, tool calls mutate guidance and allocation, and the
+
+17
+00:00:57,421 --> 00:01:00,299
+next resident step responds to those changes.
+
+18
+00:01:00,299 --> 00:01:02,766
+Every decision is logged for playback.
+
+19
+00:01:03,116 --> 00:01:07,408
+In the live WebGIS, judges can switch cities, inspect shelters and
+
+20
+00:01:07,408 --> 00:01:11,700
+road tiers, start a dynamic run, and watch the map update.
+
+21
+00:01:11,700 --> 00:01:15,992
+Orange residents are in transit, green residents are sheltered, and the
+
+22
+00:01:15,992 --> 00:01:19,504
+side panel exposes the active scenario and system health.
+
+23
+00:01:19,854 --> 00:01:22,992
+The zero-knowledge baseline provides no leader advantage.
+
+24
+00:01:22,992 --> 00:01:27,922
+It establishes the same population, network, capacity, and hazard conditions without
+
+25
+00:01:27,922 --> 00:01:28,819
+informed coordination.
+
+26
+00:01:28,819 --> 00:01:33,749
+That makes the leadership comparison inspectable instead of relying on a
+
+27
+00:01:33,749 --> 00:01:34,646
+hand-picked animation.
+
+28
+00:01:34,996 --> 00:01:39,527
+With LLM leadership enabled, agents prioritize warnings, reroute guidance, and shelter
+
+29
+00:01:39,527 --> 00:01:41,174
+allocation from local evidence.
+
+30
+00:01:41,174 --> 00:01:44,881
+The important result is not that AI always wins.
+
+31
+00:01:44,881 --> 00:01:49,412
+Early safety improves in six of eight comparable cities, while sparse
+
+32
+00:01:49,412 --> 00:01:51,059
+networks can still decline.
+
+33
+00:01:51,409 --> 00:01:55,535
+Playback links each visible change to a recorded decision cycle.
+
+34
+00:01:55,535 --> 00:02:00,073
+Xi an produced four thousand two hundred forty-two LLM calls, zero
+
+35
+00:02:00,073 --> 00:02:04,610
+failed or unparseable outputs, two hundred thirty-nine thousand resident belief updates,
+
+36
+00:02:04,610 --> 00:02:07,086
+and one hundred percent applied decisions.
+
+37
+00:02:07,436 --> 00:02:09,768
+The model also represents physical limits.
+
+38
+00:02:09,768 --> 00:02:14,044
+Road detours increase travel time, collapse can remove links, and shelter
+
+39
+00:02:14,044 --> 00:02:16,765
+capacity binds even when information is perfect.
+
+40
+00:02:16,765 --> 00:02:21,042
+This is why a leadership policy can help early yet harm
+
+41
+00:02:21,042 --> 00:02:22,985
+later when guidance concentrates demand.
+
+42
+00:02:23,335 --> 00:02:27,736
+The measured maximum run simulated fifty-one point nine million resident agents
+
+43
+00:02:27,736 --> 00:02:30,536
+across ten cities on one Radeon GPU.
+
+44
+00:02:30,536 --> 00:02:34,936
+That is fifty-six billion agent steps in four hundred forty-five seconds,
+
+45
+00:02:34,936 --> 00:02:39,336
+with ninety-eight percent peak GPU utilization and twenty-seven point seven gigabytes
+
+46
+00:02:39,336 --> 00:02:40,136
+peak VRAM.
+
+47
+00:02:40,486 --> 00:02:45,936
+The same pipeline covers Chengdu, Xi an, Los Angeles, Kathmandu, Taipei,
+
+48
+00:02:45,936 --> 00:02:49,404
+Mandalay, Naples, Wellington, L Aquila, and Noto.
+
+49
+00:02:49,404 --> 00:02:54,854
+The maps show full-population movement on real road networks, not a
+
+50
+00:02:54,854 --> 00:02:58,322
+toy grid, under one reproducible agent contract.
+
+51
+00:02:58,672 --> 00:03:03,157
+Across cities, static access ranges from ninety-nine point one percent in
+
+52
+00:03:03,157 --> 00:03:06,419
+Taipei to forty-one point one percent in Noto.
+
+53
+00:03:06,419 --> 00:03:10,904
+Leadership changes early safety, but it cannot manufacture roads or shelter
+
+54
+00:03:10,904 --> 00:03:11,312
+slots.
+
+55
+00:03:11,312 --> 00:03:15,797
+In Noto, late safety falls by thirty-two point four percentage points.
+
+56
+00:03:16,147 --> 00:03:20,196
+Local inference ran on Radeon gfx eleven hundred with forty-eight gigabytes
+
+57
+00:03:20,196 --> 00:03:24,245
+of memory, ROCm seven point two point one, and quantized Qwen
+
+58
+00:03:24,245 --> 00:03:26,085
+two point five seven B.
+
+59
+00:03:26,085 --> 00:03:30,134
+Thirty-two concurrent slots delivered eighty-eight point five tokens per second with
+
+60
+00:03:30,134 --> 00:03:31,239
+zero invalid decisions.
+
+61
+00:03:31,589 --> 00:03:36,719
+The AMD path is deliberately tuned: full GPU offload, four-bit quantization,
+
+62
+00:03:36,719 --> 00:03:41,849
+continuous batching, grammar-constrained JSON, compact context, and a forty-two percent Torch
+
+63
+00:03:41,849 --> 00:03:42,782
+memory cap.
+
+64
+00:03:42,782 --> 00:03:47,913
+These choices keep the simulator and the language model sharing one
+
+65
+00:03:47,913 --> 00:03:50,245
+GPU without losing decision validity.
+
+66
+00:03:50,595 --> 00:03:55,481
+Validation compares the evacuation-distance regime and departure fragility with published GPS
+
+67
+00:03:55,481 --> 00:03:55,925
+evidence.
+
+68
+00:03:55,925 --> 00:04:00,811
+The model reproduces the departure curve, then exposes the downstream capacity
+
+69
+00:04:00,811 --> 00:04:01,255
+gap.
+
+70
+00:04:01,255 --> 00:04:06,141
+We do not claim universal causality; repeated seeds and a same-model
+
+71
+00:04:06,141 --> 00:04:09,250
+CPU versus ROCm benchmark remain next evidence.
+
+72
+00:04:09,600 --> 00:04:14,333
+For judging, the proof is direct: open the English ten-city WebGIS,
+
+73
+00:04:14,333 --> 00:04:19,066
+inspect roads and shelters, run baseline versus LLM playback, verify local
+
+74
+00:04:19,066 --> 00:04:22,508
+GPU health, and open the Xi an metrics.
+
+75
+00:04:22,508 --> 00:04:27,241
+QuakeSense is functional Agentic AI whose decisions execute inside a city-scale
+
+76
+00:04:27,241 --> 00:04:30,253
+emergency simulation on AMD Radeon and ROCm.

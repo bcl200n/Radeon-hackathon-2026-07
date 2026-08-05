@@ -21,10 +21,10 @@ routes, and replan as the simulated city evolves.
 | Project specification | [`docs/QuakeSense_Project_Specification_EN.md`](docs/QuakeSense_Project_Specification_EN.md) |
 | Source code | [`source/`](source/) and the [full development repository](https://github.com/bcl200n/earthquake-early-warning/tree/session/quakesense-terrain-and-track2) |
 | Reproduction guide | This README and [`source/README.md`](source/README.md) |
-| Demo video | [`demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4`](demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4) — 5:19, stable 1080p video with English narration and burned-in subtitles |
+| Demo video | [`demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4`](demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4) — 4:30.5, 1080p video with English narration and burned-in subtitles |
 | Separate subtitles | [`demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt`](demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt) |
 | Presentation | [`docs/QuakeSense_AMD_Track2_Deck_EN.pptx`](docs/QuakeSense_AMD_Track2_Deck_EN.pptx) |
-| Radeon run evidence | [`evidence/xian_llm_run/`](evidence/xian_llm_run/) |
+| Radeon run evidence | [`evidence/xian_llm_run/`](evidence/xian_llm_run/) and [`evidence/max_scale_run/`](evidence/max_scale_run/) |
 
 ## Official Track 2 compliance map
 
@@ -34,12 +34,12 @@ routes, and replan as the simulated city evolves.
 | Agent architecture diagram | Project specification, Section 2; presentation, Slides 3–4 |
 | Introduction to core capabilities | Project specification, Sections 3–4; presentation, Slides 3–7 |
 | Model introduction and local deployment plan | Project specification, Section 5; this README, **Quick start** |
-| AMD Radeon inference-speed optimization | Project specification, Section 6; presentation, Slides 12–13; raw run evidence |
+| AMD Radeon inference-speed optimization | Project specification, Sections 6–7; presentation, Slides 13–15; raw run evidence |
 | Complete source repository | [`source/`](source/) plus the linked full development repository |
 | Environment, startup guide, dependencies | This README and [`source/README.md`](source/README.md) |
-| 3–5 minute actual-operation demo | 5:19 English video; agent/WebGIS mechanism and operation at 0:37–3:17 |
-| Radeon GPU execution from runtime to result | Video at 3:56–4:59; presentation, Slides 12–14; [`evidence/xian_llm_run/`](evidence/xian_llm_run/) |
-| Supplementary PPT or poster | Editable English PPT, Slides 1–16 |
+| 3–5 minute actual-operation demo | 4:30.5 English video; agent/WebGIS operation at 1:03–2:07 and measured evidence at 2:23–4:10 |
+| Radeon GPU execution from runtime to result | Video at 2:23–3:50; presentation, Slides 13–15; [`evidence/xian_llm_run/`](evidence/xian_llm_run/) and [`evidence/max_scale_run/`](evidence/max_scale_run/) |
+| Supplementary PPT or poster | Editable English PPT, Slides 1–21 |
 
 ## What judges can verify
 
@@ -88,6 +88,20 @@ ROCm-enabled `llama.cpp` server on an AMD Radeon `gfx1100` GPU with 48 GiB VRAM.
 The run summary and raw log are committed under
 [`evidence/xian_llm_run/`](evidence/xian_llm_run/), rather than copied only
 into presentation text.
+
+The maximum measured baseline run is also committed as machine-readable
+evidence and a host-utilization capture under
+[`evidence/max_scale_run/`](evidence/max_scale_run/):
+
+| Max-scale metric | Measured value |
+|---|---:|
+| Cities | 10 |
+| Resident agents | 51,853,775 |
+| Agent steps | 56.0 billion |
+| Wall-clock | 445 s |
+| Throughput | 126 million agent-steps/s |
+| Peak GPU utilization | 98% |
+| Peak VRAM | 27.7 GiB |
 
 ## Quick start
 
@@ -148,7 +162,7 @@ track2-quakesense/
 ├── README.md
 ├── docs/                 specification and editable PowerPoint deck
 ├── demo/                 narrated MP4 and SRT subtitles
-├── evidence/             raw Xi'an LLM run summary and log
+├── evidence/             Xi'an LLM run plus ten-city max-scale summaries
 └── source/
     ├── claude/
     │   ├── simulator/    resident swarm, routing, jurisdictions, LLM leaders
