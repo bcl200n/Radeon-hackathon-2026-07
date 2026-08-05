@@ -9,18 +9,18 @@
                   },
                   {
                       "path":  "demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4",
-                      "bytes":  20435173,
-                      "sha256":  "8ed98549addd63ccba9e260ca43f49b7e668b58a7fdf180db738f17b1b8dc6a3"
+                      "bytes":  14150203,
+                      "sha256":  "189a16c6a9ca1f1feba95348da900ebb93ae4b4e453d4e0638b4717d4ec14921"
                   },
                   {
                       "path":  "demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt",
-                      "bytes":  3515,
-                      "sha256":  "79cff7c5b89d29b14fcb6e265a54eaa07ad1b6a1d09b30c42d13c21fa18f10a1"
+                      "bytes":  5425,
+                      "sha256":  "9e581033fa6b61b680da4e229ad5ea9d5b99537d1e5dabfd39598159be7d5391"
                   },
                   {
                       "path":  "docs/QuakeSense_AMD_Track2_Deck_EN.pptx",
-                      "bytes":  8168206,
-                      "sha256":  "aec7001891ec7ce546a60b6ac40b32c8256b2d9b6f117bc3b76cf48841c19524"
+                      "bytes":  3514952,
+                      "sha256":  "336d1fc137377d9cf9334ee49ce36614ce249d030c9ed21844e78e67aaa66149"
                   },
                   {
                       "path":  "docs/QuakeSense_Project_Specification_EN.md",
@@ -29,8 +29,8 @@
                   },
                   {
                       "path":  "evidence/README.md",
-                      "bytes":  1175,
-                      "sha256":  "848a11497d057b460030db793f7ab11aeabf7968b0995f35601786ea2e8acaa9"
+                      "bytes":  1310,
+                      "sha256":  "e292b89daefd04a01b10e27ee2ccbd27922ec6af4ef029a2019ba26c52845f28"
                   },
                   {
                       "path":  "public_demo/data/payloads/kathmandu.json",
@@ -298,5 +298,5 @@
                       "sha256":  "22089788a2484f9febf38b883d529dca91943ca12908e763f1857f7c18ea393b"
                   }
               ],
-    "total_bytes":  34875816
+    "total_bytes":  23939637
 }
