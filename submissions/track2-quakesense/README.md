@@ -20,6 +20,7 @@ QuakeSense is a locally deployed agentic AI system for auditable, city-scale ear
 | Supplementary presentation | [`docs/QuakeSense_AMD_Track2_Deck_EN.pptx`](docs/QuakeSense_AMD_Track2_Deck_EN.pptx) |
 | Seven-city animated evidence | [`public_demo/`](public_demo/) |
 | Radeon/ROCm evidence map | [`evidence/README.md`](evidence/README.md) |
+| Online demo playback | [Watch the final QuakeSense demo on Bilibili](https://www.bilibili.com/video/BV1MbuH6KE18/) |
 
 ## Public demonstration
 
