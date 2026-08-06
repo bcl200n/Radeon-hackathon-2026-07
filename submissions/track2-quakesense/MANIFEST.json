@@ -6,9 +6,14 @@
       "sha256": "4f5bc952799c04e8242d2dd78cbd4c3c2e2909320011b6fbef29e9be5f255301"
     },
     {
+      "path": "README.md",
+      "bytes": 2908,
+      "sha256": "997cf9eed1eb882770ad4cfd3a48b6798eb1b370b82ca6e4eecd06b499cbda0e"
+    },
+    {
       "path": "demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4",
-      "bytes": 14150203,
-      "sha256": "189a16c6a9ca1f1feba95348da900ebb93ae4b4e453d4e0638b4717d4ec14921"
+      "bytes": 12746629,
+      "sha256": "6883760052fa9c518bcc5e3d4bc55e11a7561785339d61fb1ef33a0e37fc9ac1"
     },
     {
       "path": "demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt",
@@ -29,6 +34,11 @@
       "path": "evidence/README.md",
       "bytes": 1310,
       "sha256": "e292b89daefd04a01b10e27ee2ccbd27922ec6af4ef029a2019ba26c52845f28"
+    },
+    {
+      "path": "public_demo/README.md",
+      "bytes": 467,
+      "sha256": "48d308a74f65774200b144565d319907d6b1033aad0acf2a8d929c2b99261754"
     },
     {
       "path": "public_demo/data/payloads/kathmandu.json",
@@ -101,19 +111,14 @@
       "sha256": "a53be764168ece58959b687ef4e652b092f12145a4910e094c6e897e0d703fd6"
     },
     {
-      "path": "public_demo/README.md",
-      "bytes": 467,
-      "sha256": "48d308a74f65774200b144565d319907d6b1033aad0acf2a8d929c2b99261754"
-    },
-    {
       "path": "public_demo/web/viewer.html",
       "bytes": 8172,
       "sha256": "acf350406a0054e6c9ef53c279c87cdb72a7a1ca0ecd634f04e0c97b21814231"
     },
     {
-      "path": "README.md",
-      "bytes": 2908,
-      "sha256": "997cf9eed1eb882770ad4cfd3a48b6798eb1b370b82ca6e4eecd06b499cbda0e"
+      "path": "source/README.md",
+      "bytes": 2158,
+      "sha256": "307b0839dfea07d1f46bd111a71c96385f4eb94f4004f2acc9149e096165b1c6"
     },
     {
       "path": "source/claude/geo/population_raster.py",
@@ -274,11 +279,6 @@
       "path": "source/quakesense_public/model.py",
       "bytes": 2759,
       "sha256": "83b49fa311f9a952945d4abea1e1bf46b4991658cde4b8cde60b55cb22700513"
-    },
-    {
-      "path": "source/README.md",
-      "bytes": 2158,
-      "sha256": "307b0839dfea07d1f46bd111a71c96385f4eb94f4004f2acc9149e096165b1c6"
     },
     {
       "path": "source/requirements.txt",
