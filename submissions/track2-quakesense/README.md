@@ -1,5 +1,10 @@
 # QuakeSense — AMD AI DevMaster Hackathon 2026, Track 2
 
+> [!IMPORTANT]
+> ▶️ **[Watch the final QuakeSense demo online on Bilibili](https://www.bilibili.com/video/BV1MbuH6KE18/)**
+> 
+> The high-quality submitted MP4 remains available in [demo/](demo/).
+
 QuakeSense is a locally deployed agentic AI system for auditable, city-scale earthquake evacuation experiments. Local language-model leaders observe jurisdiction state, keep compact memory, emit grammar-constrained actions, and change destination allocation while the physical simulator enforces road throughput, shelter capacity, and population conservation.
 
 **Participant:** Bian Chunlin (`bcl200n`)
@@ -15,8 +20,7 @@ QuakeSense is a locally deployed agentic AI system for auditable, city-scale ear
 | Project specification | [`docs/QuakeSense_Project_Specification_EN.md`](docs/QuakeSense_Project_Specification_EN.md) |
 | Complete public-safe source | [`source/`](source/) |
 | Environment, startup, dependencies | [`source/README.md`](source/README.md), [`source/requirements.txt`](source/requirements.txt) |
-| 3–5 minute actual-operation demo | [`demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4`](demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4) |
-| Demo subtitles | [`demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt`](demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt) |
+| Demo video | [`demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4`](demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4) |
 | Supplementary presentation | [`docs/QuakeSense_AMD_Track2_Deck_EN.pptx`](docs/QuakeSense_AMD_Track2_Deck_EN.pptx) |
 | Seven-city animated evidence | [`public_demo/`](public_demo/) |
 | Radeon/ROCm evidence map | [`evidence/README.md`](evidence/README.md) |

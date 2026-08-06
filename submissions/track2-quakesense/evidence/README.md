@@ -7,10 +7,12 @@ The official submission keeps the evidence chain reviewable without publishing p
 | Local LLM leader loop and constrained actions | `source/claude/simulator/llm_leaders.py` |
 | Device-oriented resident state and step kernels | `source/claude/simulator/agent_swarm.py`, `source/claude/simulator/swarm_step.py` |
 | Conservation and capacity tests | `source/tests/`, `source/claude/tests/` |
-| Radeon/ROCm runtime, throughput, memory, concurrency, and validity | Demo video and presentation |
-| Seven-city animated process evidence | `public_demo/`; five detailed static city maps in the presentation |
+| Radeon/ROCm runtime, throughput, memory, concurrency, and validity | Final demo video and presentation |
+| Seven-city animated process evidence | `public_demo/` |
 | Research meaning, limitations, and AMD acknowledgment | Specification, presentation, and demo conclusion |
 
-The video is 1920×1080 H.264 with AAC audio and an embedded English subtitle track. Its duration is approximately 4 minutes 36 seconds, within the official 3–5 minute recommendation. The 21-slide PowerPoint uses five detailed static city maps for a cleaner presentation, while `public_demo/` retains animated evidence for all seven public overseas city cases.
+The final submission video is a 1280×720 H.264/AAC MP4 with English narration and a duration of approximately 8 minutes 16 seconds. The official 3–5 minute duration is a recommendation. Reviewers can watch the same final video online at [Bilibili](https://www.bilibili.com/video/BV1MbuH6KE18/) or download the MP4 from the submission.
 
-Large raw arrays, model weights, personal credentials, and private city materials are retained outside the public repository.
+The final editable PowerPoint contains 39 slides. The separate `public_demo/` directory contains animated evidence and archived synthetic payloads for exactly seven overseas city cases.
+
+Large raw arrays, model weights, personal credentials, domestic city datasets, generated caches, and private research materials are retained outside the public repository.
