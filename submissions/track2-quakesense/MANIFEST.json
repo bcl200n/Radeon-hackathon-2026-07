@@ -7,8 +7,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 2908,
-      "sha256": "997cf9eed1eb882770ad4cfd3a48b6798eb1b370b82ca6e4eecd06b499cbda0e"
+      "bytes": 3388,
+      "sha256": "6dcfe9a438629e57f23d4fe6f0f2a708c3305d3ee8db94062cdd522e109d04b9"
     },
     {
       "path": "demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.mp4",
@@ -19,6 +19,11 @@
       "path": "demo/QuakeSense_Agentic_AI_AMD_Track2_Demo_EN.srt",
       "bytes": 5425,
       "sha256": "9e581033fa6b61b680da4e229ad5ea9d5b99537d1e5dabfd39598159be7d5391"
+    },
+    {
+      "path": "demo/README.md",
+      "bytes": 494,
+      "sha256": "59ab7a0ef8938264ae3bdead6211e2ca0a7268b6feb249ecb0a767a1850862a0"
     },
     {
       "path": "docs/QuakeSense_AMD_Track2_Deck_EN.pptx",
@@ -32,8 +37,8 @@
     },
     {
       "path": "evidence/README.md",
-      "bytes": 1310,
-      "sha256": "e292b89daefd04a01b10e27ee2ccbd27922ec6af4ef029a2019ba26c52845f28"
+      "bytes": 1488,
+      "sha256": "0936c7b4c10e07ecd163463978baf7a02c4945763c5232ec114e8acd70a5d16e"
     },
     {
       "path": "public_demo/README.md",

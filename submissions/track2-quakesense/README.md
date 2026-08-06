@@ -28,7 +28,9 @@ QuakeSense is a locally deployed agentic AI system for auditable, city-scale ear
 
 ## Public demonstration
 
-The release contains seven overseas city scenarios: Los Angeles, Naples, Wellington, L'Aquila, Noto, Kumamoto, and Kathmandu. They use a common animated evidence interface so reviewers can compare the complete evacuation process rather than isolated static charts.
+The editable presentation ([`docs/QuakeSense_AMD_Track2_Deck_EN.pptx`](docs/QuakeSense_AMD_Track2_Deck_EN.pptx)) consists of **39 slides** covering **10 city evacuation scenarios** with animated GIFs and detailed map analysis.
+
+The `public_demo/` interactive viewer contains seven overseas city scenarios: Los Angeles, Naples, Wellington, L'Aquila, Noto, Kumamoto, and Kathmandu. They use a common animated evidence interface so reviewers can compare the complete evacuation process rather than isolated static charts.
 
 ```bash
 python -m http.server 8765 --directory submissions/track2-quakesense/public_demo
